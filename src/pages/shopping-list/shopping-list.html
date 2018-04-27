@@ -1,0 +1,54 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title text-center>Shopping List</ion-title>
+    <ion-buttons left>
+      <button ion-button (click)="onOpenMenu()">
+        <ion-icon name="menu" ></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="onShowOptions($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Name</ion-label>
+        <ion-input type="text" name="ingredientName" placeholder="Name" #name="ngModel" ngModel required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Amount</ion-label>
+        <ion-input type="text" name="amount" placeholder="2" ngModel #number="ngModel" required></ion-input>
+      </ion-item>
+    </ion-list>
+    <button ion-button type="submit" block [disabled]="!form.valid">
+      {{editMode===true?'Edit':'Add'}}
+    </button>
+  </form>
+  <ion-list padding>
+    <ion-item-sliding *ngFor="let ingredient of ingredients;let i = index"> 
+    <ion-item padding >
+      <ion-icon item-left name="basket"></ion-icon>
+      <h4>{{ingredient.name}}</h4>
+      <p>amount: {{ingredient.amount}}</p>
+    </ion-item>
+    <ion-item-options>
+        <button color="dark" ion-button small outline (click)="editItem(ingredient,i)">
+            Edit
+          </button>
+      <button color="danger" ion-button small (click)="removeItem(i)" >
+        <ion-icon name="trash"></ion-icon>
+      </button>
+    </ion-item-options>
+  </ion-item-sliding>
+  </ion-list>
+</ion-content>

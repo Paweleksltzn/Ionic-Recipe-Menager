@@ -1,0 +1,36 @@
+<ion-header>
+
+  <ion-navbar>
+
+    <ion-title text-center>{{recipe.title | uppercase}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-title><h2 text-center>{{recipe.title | uppercase}}</h2></ion-card-title>
+    <ion-card-content>
+      <p padding>{{recipe.difficulty}}</p>
+      <hr>
+      <p padding>{{recipe.description}}</p>
+      <hr>
+      <ion-list>
+        <h5 text-center>Ingredients</h5>
+        <ion-item *ngFor="let ingredient of recipe.ingredients; let i = index">
+          <p> {{i}}. {{ingredient.name}} in amount of {{ingredient.amount}}</p>
+          <hr>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  <ion-row>
+ <ion-col > <button ion-button  color="primary" padding (click)="onRecall(true)">Edit Recipe</button></ion-col>
+ <ion-col ><button ion-button  color="danger" padding (click)="onDelete()">Delete Recipe</button></ion-col> 
+</ion-row>
+<ion-row>
+    <ion-col text-center> <button ion-button  color="secondary" (click)="onRecall()">Back to recipes</button></ion-col>
+  <ion-col><button ion-button  color="light" (click)="onAddIngredients()">Add ingredients to shopping list</button></ion-col>
+</ion-row>
+</ion-content>

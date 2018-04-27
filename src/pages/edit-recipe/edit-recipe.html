@@ -1,0 +1,37 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title text-center>{{mode}} Recipe</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-list>
+      <ion-item>
+        <ion-label floating >Title</ion-label>
+        <ion-input type="text" formControlName="title"></ion-input>
+      </ion-item>
+      <ion-item>
+          <ion-label floating >Description</ion-label>
+          <ion-textarea formControlName="description"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label floating >Difficulty</ion-label>
+            <ion-select formControlName="difficulty"> 
+              <ion-option *ngFor="let option of options" [value]="option">{{option}}</ion-option>
+            </ion-select>
+          </ion-item>
+    </ion-list>
+    <button type="button" clear ion-button block (click)="onManageIngredients()">Manage ingredients</button> 
+    <ion-list formArrayName="ingredients">
+      <ion-item *ngFor="let igControl of getControlName();let i = index">
+        <ion-label>Name</ion-label>
+        <ion-input type="text" [formControlName]="i"></ion-input>
+      </ion-item>
+    </ion-list>
+    <button type="submit" ion-button block [disabled]="!form.valid">{{mode}} Recipe</button>
+  </form>
+</ion-content>
