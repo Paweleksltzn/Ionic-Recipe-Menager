@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController, PopoverController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController, PopoverController, LoadingController, AlertController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { IngredientsService } from '../../services/ingredients.service';
 import { Ingredient } from '../../interfaces/ingredients.interface';
@@ -17,7 +17,8 @@ export class ShoppingListPage{
   editMode=false;
   @ViewChild('form')form:NgForm
   constructor(public navCtrl: NavController, public navParams: NavParams,private ingredientSrv:IngredientsService,
-    private menuCtrl:MenuController,private popoverCtrl:PopoverController,private authSrv:AuthService) {
+    private menuCtrl:MenuController,private popoverCtrl:PopoverController,private authSrv:AuthService,private loadingCtrL:LoadingController,
+  private alertCtrl:AlertController) {
   }
   ionViewWillEnter(){
     this.ingredients=this.ingredientSrv.getIngredients();
@@ -57,16 +58,49 @@ export class ShoppingListPage{
     this.menuCtrl.open();
   }
   onShowOptions(event){
+    const loading = this.loadingCtrL.create({
+      content:'Please wait'
+    })
     const popover = this.popoverCtrl.create(SlOptions);
     popover.present({ev:event});
     popover.onDidDismiss(data=>{
+      if(!data){
+        return;
+      }
       if(data.action=='store'){
+        loading.present();
         this.authSrv.getActiveUser().getIdToken().then((token:string)=>{
           this.ingredientSrv.storeList(token).subscribe(response=>{
-            console.log(response);
+            loading.dismiss();
+          },error=>{
+            loading.dismiss();
+            this.alertAppear().present();
           })
         })
       }
+      else if(data.action=='load'){
+        loading.present();
+        this.authSrv.getActiveUser().getIdToken().then((token:string)=>{
+          this.ingredientSrv.fetchList(token).subscribe(response=>{
+            if(!response){
+              response=[];
+            }
+            this.ingredients=response;
+            this.ingredientSrv.patchIngredientsViaHttp(response) || [];
+            loading.dismiss();
+          },error=>{
+            loading.dismiss();
+            this.alertAppear().present();
+          })
+        })
+      }
+    })
+  }
+  private alertAppear(){
+    return this.alertCtrl.create({
+      title:'Something goes wrong',
+      message:'Http request didn t success',
+      buttons:['OK']
     })
   }
 

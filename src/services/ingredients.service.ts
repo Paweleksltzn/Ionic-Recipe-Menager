@@ -31,9 +31,15 @@ export class IngredientsService{
     patchIngredients(ingredient,index){
         this.ingredients[index]=ingredient;
     }
+    patchIngredientsViaHttp(ingredients:Ingredient[]){
+        this.ingredients=ingredients;
+    }
     storeList(token:string){
-        
         const userId=this.authSrv.getActiveUser().uid;
         return this.http.put('https://ionic2-95189.firebaseio.com/'+userId+'shooping-list.json?auth='+token,this.ingredients);
       }
+    fetchList(token){
+        const userId=this.authSrv.getActiveUser().uid;
+        return this.http.get('https://ionic2-95189.firebaseio.com/'+userId+'shooping-list.json?auth='+token);
+    }
 }
